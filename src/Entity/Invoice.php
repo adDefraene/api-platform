@@ -8,6 +8,7 @@ use App\Repository\InvoiceRepository;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 
 /**
@@ -33,7 +34,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
  *      "pagination_items_per_page"=25,
  *      "order":{"sentAt":"desc"}
  *  },
- *  normalizationContext={"groups"={"invoices_read"}}
+ *  normalizationContext={"groups"={"invoices_read"}},
+ *  denormalizationContext={"disable_type_enforcement"=true}
  * )
  * @ApiFilter(OrderFilter::class, properties={"amount","sentAt"})
  */
@@ -50,18 +52,24 @@ class Invoice
     /**
      * @ORM\Column(type="float")
      * @Groups({"invoices_read", "customers_read", "invoices_subresource"})
+     * @Assert\NotBlank(message="The invoice's amount is mandatory")
+     * @Assert\Type(type="numeric", message="The invoice's amount must be a float number")
      */
     private $amount;
 
     /**
      * @ORM\Column(type="datetime")
      * @Groups({"invoices_read", "customers_read", "invoices_subresource"})
+     * @Assert\NotBlank(message="The invoice's sent date is mandatory")
+     * @Assert\Type(type="datetime", message="The invoice's sent date must be YYYY-MM-DD")
      */
     private $sentAt;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"invoices_read", "customers_read", "invoices_subresource"})
+     * @Assert\NotBlank(message="The invoice's status is mandatory")
+     * @Assert\Choice(choices={"SENT","PAID","CANCELLED"}, message="The invoice's amount must be a float number")
      */
     private $status;
 
@@ -69,12 +77,15 @@ class Invoice
      * @ORM\ManyToOne(targetEntity=Customer::class, inversedBy="invoices")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"invoices_read"})
+     * @Assert\NotBlank(message="The invoice's customer is mandatory")
      */
     private $customer;
 
     /**
      * @ORM\Column(type="integer")
      * @Groups({"invoices_read", "customers_read", "invoices_subresource"})
+     * @Assert\NotBlank(message="The invoice's chrono is mandatory")
+     * @Assert\Type(type="integer", message="The invoice's amount must be a number")
      */
     private $chrono;
 
@@ -99,7 +110,7 @@ class Invoice
         return $this->amount;
     }
 
-    public function setAmount(float $amount): self
+    public function setAmount($amount): self
     {
         $this->amount = $amount;
 
@@ -111,7 +122,7 @@ class Invoice
         return $this->sentAt;
     }
 
-    public function setSentAt(\DateTimeInterface $sentAt): self
+    public function setSentAt($sentAt): self
     {
         $this->sentAt = $sentAt;
 
@@ -147,7 +158,7 @@ class Invoice
         return $this->chrono;
     }
 
-    public function setChrono(int $chrono): self
+    public function setChrono($chrono): self
     {
         $this->chrono = $chrono;
 

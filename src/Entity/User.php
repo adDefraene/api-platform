@@ -11,6 +11,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -18,6 +20,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *      normalizationContext={"groups"={"users_read"}}
  * )
  * @ApiFilter(SearchFilter::class, properties={"customers.firstName"})
+ * @UniqueEntity("email", message="A user with this email already exists")
  */
 class User implements UserInterface
 {
@@ -32,6 +35,8 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Groups({"users_read", "customers_read", "invoices_read", "invoices_subresource"})
+     * @Assert\NotBlank(message="The email must be advised")
+     * @Assert\Email(message="The email must be valid")
      */
     private $email;
 
@@ -44,18 +49,23 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="The password is mandatory")
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"users_read", "customers_read", "invoices_read", "invoices_subresource"})
+     * @Assert\NotBlank(message="The firstname is mandatory")
+     * @Assert\Length(min=1, minMessage="The firstname must be 1 and 255 characters long", max=255, maxMessage="The firstname must be 1 and 255 characters long")
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"users_read", "customers_read", "invoices_read", "invoices_subresource"})
+     * @Assert\NotBlank(message="The lastname is mandatory")
+     * @Assert\Length(min=1, minMessage="The lastname must be 1 and 255 characters long", max=255, maxMessage="The lastname must be 1 and 255 characters long")
      */
     private $lastName;
 
