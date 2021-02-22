@@ -9,10 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\Serializer\Normalizer;
+namespace App\Serializer;
 
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
+use Symfony\Component\Serializer\Normalizer\CacheableSupportsMethodInterface;
 
 /**
  * Normalizes an object implementing the {@see \DateTimeInterface} to a date string.
@@ -20,7 +23,7 @@ use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface, CacheableSupportsMethodInterface
+class PatchedDateTimeNormalizer implements NormalizerInterface, DenormalizerInterface, CacheableSupportsMethodInterface
 {
     public const FORMAT_KEY = 'datetime_format';
     public const TIMEZONE_KEY = 'datetime_timezone';
