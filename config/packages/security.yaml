@@ -20,7 +20,7 @@ security:
             stateless: true
             methods: [POST]
         login:
-            pattern:  ^/api/login
+            pattern: ^/api/login
             stateless: true
             anonymous: true
             json_login:
@@ -50,10 +50,10 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/api/users, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET,PUT,PATCH,DELETE] }
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api/customers, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api/invoices, roles: IS_AUTHENTICATED_FULLY }
-        # - { path: ^/api/users, roles: IS_AUTHENTICATED_FULLY, methods: [GET,PUT,PATCH,DELETE] }
 
     
